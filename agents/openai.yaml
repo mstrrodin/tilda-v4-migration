@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tilda to VPS Migration"
+  short_description: "Plan and execute safe Tilda migrations"
+  default_prompt: "Use $tilda-v4-migration to plan and execute a staged Tilda-to-VPS migration."

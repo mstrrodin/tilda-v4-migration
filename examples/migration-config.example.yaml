@@ -1,0 +1,43 @@
+schema_version: 1
+
+migration:
+  donor_url: "https://donor.example.com/page/"
+  target_url: "https://www.example.com/page/"
+  topology: "canonical-consolidation"
+  donor_kind: "host"
+  mode: "native-rebuild"
+  source_available: "live-page"
+  cutover_authorized: false
+
+ownership:
+  application: "web-team"
+  deployment: "platform-team"
+  dns: "domain-owner"
+  proxy_and_tls: "platform-team"
+  analytics: "growth-team"
+
+evidence_commands:
+  typecheck: "replace-with-project-command"
+  test: "replace-with-project-command"
+  content_validation: "replace-with-project-command"
+  build: "replace-with-project-command"
+  redirect_preflight: "replace-with-project-command"
+  public_smoke: "replace-with-project-command"
+
+form_testing:
+  submit_production_forms: false
+  required_mechanisms:
+    - "contact-form"
+    - "callback"
+
+measurement:
+  baseline_period: "define-before-comparison"
+  comparison_period: "define-before-comparison"
+  lead_definition: "successful-server-accepted-request"
+  deduplication: "document-project-rule"
+  visibility_source: "document-search-console-or-rank-tracker"
+
+rollback:
+  application: "document-release-rollback"
+  dns: "document-previous-record-and-ttl"
+  proxy: "document-previous-config"
