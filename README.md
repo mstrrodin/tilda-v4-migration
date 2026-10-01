@@ -68,10 +68,16 @@ Missing analytics evidence is reported as unverified, never converted into zero.
 Run the dependency-free package validator:
 
 ```bash
-python3 scripts/validate.py
+python3 -I -B scripts/validate.py
 ```
 
 It checks the skill frontmatter, UI metadata, local Markdown links, required package files, unfinished placeholders, and executable bit on the validator itself.
+
+Run the validator's negative security tests as well:
+
+```bash
+python3 -I -B scripts/test_validate.py
+```
 
 ## Repository layout
 
@@ -87,6 +93,8 @@ It checks the skill frontmatter, UI metadata, local Markdown links, required pac
 ├── examples/migration-config.example.yaml
 ├── references/phase-gates.md
 ├── references/project-adapter.md
+├── docs/security-audit-2026-10-01.md
+├── scripts/test_validate.py
 ├── scripts/validate.py
 └── .github/workflows/validate.yml
 ```
@@ -96,6 +104,8 @@ It checks the skill frontmatter, UI metadata, local Markdown links, required pac
 See [CONTRIBUTING.md](CONTRIBUTING.md). Keep the skill provider-neutral and avoid adding organization-specific domains, credentials, infrastructure addresses, analytics IDs, or repository paths.
 
 For repository settings, release naming, and the final public checklist, see [PUBLISHING.md](PUBLISHING.md).
+
+The latest public security review is documented in [docs/security-audit-2026-10-01.md](docs/security-audit-2026-10-01.md).
 
 ## License
 

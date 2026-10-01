@@ -67,12 +67,15 @@ Process the export deterministically:
 
 - remove duplicate global navigation, footer, cookie, and popup elements;
 - scope imported CSS to the page container;
+- parse donor markup as inert, untrusted content rather than executing embedded code;
+- remove scripts, inline event handlers, trackers, unsafe URL schemes, and unreviewed third-party embeds;
+- reimplement explicitly required interactive behavior through reviewed destination components or an allowlist;
 - localize required assets and rewrite their references;
 - preserve videos, forms, and meaningful hidden content deliberately;
 - wrap the result in the destination application's metadata, navigation, and lead-flow conventions;
 - compare processed output with the source and explain material differences.
 
-**Gate:** no unexplained content loss, no second global header or footer, imported CSS is isolated, and required assets are available from controlled locations.
+**Gate:** no unexplained content loss, no second global header or footer, imported CSS is isolated, executable donor code is not carried over implicitly, and required assets are available from controlled locations.
 
 ## 1C. Finish incomplete
 

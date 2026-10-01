@@ -23,6 +23,7 @@ REQUIRED_FILES = (
     "examples/migration-config.example.yaml",
     "references/phase-gates.md",
     "references/project-adapter.md",
+    "scripts/test_validate.py",
     "scripts/validate.py",
     ".github/workflows/validate.yml",
 )
@@ -159,6 +160,27 @@ def validate_openai_metadata() -> None:
         fail("interface.default_prompt must mention $tilda-v4-migration")
 
 
+def validate_workflow_security() -> None:
+    content = read_text(".github/workflows/validate.yml")
+    if re.search(r"^\s*pull_request_target\s*:", content, re.MULTILINE):
+        fail("pull_request_target is not allowed for the validation workflow")
+    if not re.search(r"^permissions:\n  contents: read\s*$", content, re.MULTILINE):
+        fail("validation workflow must keep top-level contents: read permission")
+    if "persist-credentials: false" not in content:
+        fail("checkout credentials must not persist after the checkout step")
+    if not re.search(r"^\s{4}timeout-minutes:\s*[1-9]\d*\s*$", content, re.MULTILINE):
+        fail("validation job requires a positive timeout-minutes value")
+
+    actions = re.findall(r"^\s*uses:\s*([^#\s]+)", content, re.MULTILINE)
+    if not actions:
+        fail("validation workflow must declare its actions")
+    for action in actions:
+        if action.startswith("./"):
+            continue
+        if not re.fullmatch(r"[^/@\s]+/[^@\s]+@[0-9a-fA-F]{40}", action):
+            fail(f"workflow action must be pinned to a full commit SHA: {action}")
+
+
 def validate_links() -> None:
     markdown_link = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
     for path in ROOT.rglob("*.md"):
@@ -192,7 +214,11 @@ def validate_public_hygiene() -> None:
     )
 
     for path in ROOT.rglob("*"):
-        if not path.is_file() or ".git" in path.parts:
+        if ".git" in path.parts:
+            continue
+        if path.is_symlink():
+            fail(f"symbolic links are not allowed: {path.relative_to(ROOT)}")
+        if not path.is_file():
             continue
         if path.suffix.lower() not in TEXT_SUFFIXES:
             fail(f"unexpected non-text artifact: {path.relative_to(ROOT)}")
@@ -212,6 +238,7 @@ def main() -> None:
 
     validate_skill()
     validate_openai_metadata()
+    validate_workflow_security()
     validate_links()
     validate_public_hygiene()
 
